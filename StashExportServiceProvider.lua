@@ -591,13 +591,14 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
     -- For publishing, the name becomes "Uploaded by Lightroom"
     local stackName = "Lightroom Exports"
     local stackId = nil
+    local publishedCollectionInfo = nil
 
     -- Setup a variable to distinguish if we're trying to publish, or just exporting
     local publishing = false
 
     if exportContext.publishService then
         publishing = true
-        local publishedCollectionInfo = exportContext.publishedCollectionInfo
+        publishedCollectionInfo = exportContext.publishedCollectionInfo
         local isDefaultCollection = publishedCollectionInfo.isDefaultCollection
 
         -- However, if we're uploading from the default collection, then just dump stuff into a folder labelled
@@ -693,7 +694,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                     -- the itemid is a unsigned long int, which Lua doesn't support
                     -- so convert it to text
                     if type(StashInfo.itemid) == 'number' then
-                        StashInfo.itemid = LrStringUtils.numberToString(StashInfo.itemid)
+                        StashInfo.itemid = string.format("%i", StashInfo.itemid)
                     end
 
                     logger:info("Recording item id " .. StashInfo.itemid)
@@ -706,7 +707,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                 -- doesn't exist
                 if publishedCollectionInfo.remoteId == nil or
                     not StashAPI.verifyStackExists(publishedCollectionInfo.remoteId) then
-                    stackId = LrStringUtils.numberToString(StashInfo.stackid)
+                    stackId = string.format("%i", StashInfo.stackid)
                     logger:info(string.format("Recording stackId: %s", stackId))
                     exportSession:recordRemoteCollectionId(stackId)
                 end
